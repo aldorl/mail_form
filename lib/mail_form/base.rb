@@ -2,6 +2,7 @@ module MailForm
     class Base
         include ActiveModel::AttributeMethods # attribute methods behavior
         attribute_method_prefix 'clear_' # clear_ is attribute prefix
+        attribute_method_suffix '?' # ? is attribute suffix
 
         def self.attributes(*names)
             attr_accessor(*names)
@@ -17,6 +18,11 @@ module MailForm
             # name and implements the clearing logic.
             def clear_attribute(attr)
                 send("#{attr}=", nil)
+            end
+
+            # Implement the logic required by the '?' suffix
+            def attribute?(attr)
+                send(attr).present?
             end
     end
 end
