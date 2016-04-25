@@ -1,3 +1,5 @@
 = MailForm
 
+Rails plug-in called used in controllers and views as a contact form abstraction. Mail Form’s goal is to receive a hash of parameters sent by a POST request, validate them, and email them to a specified email address.
+
 This project rocks and uses MIT-LICENSE.
