@@ -5,12 +5,17 @@ module MailForm
         extend ActiveModel::Naming
         include ActiveModel::Validations
         include MailForm::Validators
+        extend ActiveModel::Callbacks
 
         attribute_method_prefix 'clear_' # clear_ is attribute prefix
         attribute_method_suffix '?' # ? is attribute suffix
 
         class_attribute :attribute_names
         self.attribute_names = []
+
+        # 2) Define the callbacks. The line below will create both before_deliver
+        # and after_deliver callbacks with the same semantics as in Active Record
+        define_model_callbacks :deliver
 
         def initialize(attributes = {})
             attributes.each do |attr, value|
@@ -34,7 +39,9 @@ module MailForm
 
         def deliver
             if valid?
-                MailForm::Notifier.contact(self).deliver_now
+                run_callbacks(:deliver) do
+                    MailForm::Notifier.contact(self).deliver_now
+                end
             else
                 false
             end
