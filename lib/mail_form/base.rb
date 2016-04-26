@@ -8,15 +8,29 @@ module MailForm
         attribute_method_prefix 'clear_' # clear_ is attribute prefix
         attribute_method_suffix '?' # ? is attribute suffix
 
+        class_attribute :attribute_names
+        self.attribute_names = []
+
         def self.attributes(*names)
             attr_accessor(*names)
 
             # Ask to define the prefix methods for the given attribute names
             define_attribute_methods(names)
+
+            # Add new names as they are defined
+            self.attribute_names += names
         end
 
         def persisted?
             false
+        end
+
+        def deliver
+            if valid?
+                MailForm::Notifier.contact(self).deliver_now
+            else
+                false
+            end
         end
 
         protected
