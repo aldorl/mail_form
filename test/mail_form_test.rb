@@ -22,7 +22,7 @@ class MailFormTest < ActiveSupport::TestCase
 
         sample.name = "User"
         assert sample.name?
-        
+
         sample.email = ""
         assert !sample.email?
     end
